@@ -1,0 +1,35 @@
+[
+  {
+    "platform": "LeetCode",
+    "label": "LeetCode Algorithms",
+    "solved": 0,
+    "total": 0,
+    "url": "https://leetcode.com/",
+    "lastUpdated": "2026-09-18",
+    "description": "Algorithmic problem solving across arrays, strings, dynamic programming, and graph algorithms. Baseline metrics tracked honestly without simulated numbers.",
+    "status": "Active Exploration",
+    "category": "DSA & Problem Solving"
+  },
+  {
+    "platform": "NeetCode",
+    "label": "NeetCode Core Roadmap",
+    "solved": 0,
+    "total": 150,
+    "progress": 0,
+    "url": "https://neetcode.io/",
+    "lastUpdated": "2026-09-18",
+    "description": "Structured roadmap through core algorithmic patterns: Two Pointers, Sliding Window, Trees, Backtracking, and Heaps.",
+    "status": "Curated Progression",
+    "category": "DSA & Problem Solving"
+  },
+  {
+    "platform": "HackerRank",
+    "label": "HackerRank Problem Solving",
+    "badges": 0,
+    "url": "https://www.hackerrank.com/",
+    "lastUpdated": "2026-09-18",
+    "description": "Foundational coding challenges covering Python data structures, standard algorithms, and functional syntax proficiency.",
+    "status": "Fundamental Challenges",
+    "category": "DSA & Problem Solving"
+  }
+]

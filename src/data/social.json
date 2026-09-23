@@ -1,0 +1,20 @@
+[
+  {
+    "platform": "GitHub",
+    "label": "Shishir Dev on GitHub",
+    "url": "https://github.com/coopeace",
+    "icon": "Github"
+  },
+  {
+    "platform": "LinkedIn",
+    "label": "Shishir Dev on LinkedIn",
+    "url": "https://www.linkedin.com/in/shishir-dev-2aa230361/",
+    "icon": "Linkedin"
+  },
+  {
+    "platform": "Email",
+    "label": "Open Direct Communications",
+    "url": "mailto:shishirdev5263@gmail.com",
+    "icon": "Mail"
+  }
+]

@@ -1,0 +1,108 @@
+[
+  {
+    "slug": "packet-lens",
+    "name": "PacketLens",
+    "tagline": "High-Performance Linux Raw Socket Network Analyzer",
+    "description": "A lightweight command-line network packet analyzer and protocol decoder written in Python leveraging Linux raw sockets (`AF_PACKET`). Captures and dissects Ethernet II frames, IPv4/IPv6 headers, TCP three-way handshakes, UDP datagrams, and ICMP control messages in real-time.",
+    "category": "Networking",
+    "technologies": ["Python", "Linux Raw Sockets", "TCP/IP", "Struct Parsing", "POSIX"],
+    "github": "https://github.com/coopeace",
+    "featured": true,
+    "missionNumber": "MSN-01",
+    "architectureHighlights": [
+      "Utilizes low-level `socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL))` to bypass transport stack filters on Linux interfaces.",
+      "Binary parsing using Python standard `struct` unpacking for zero-dependency packet decoding.",
+      "Reconstructs TCP stream sequences and detects window exhaustion, syn floods, and connection resets.",
+      "Modular protocol handler dispatch pipeline allowing pluggable protocol dissectors."
+    ],
+    "keyChallenges": [
+      "Handling high packet volume on saturated interfaces without dropping frames via ring buffer abstractions.",
+      "Big-endian to little-endian bitwise field unpacking across variable-length IP options headers."
+    ],
+    "specs": {
+      "runtime": "Python 3.11+ on Linux (root/CAP_NET_RAW)",
+      "protocolOrFormat": "Ethernet, IPv4, IPv6, TCP, UDP, ICMP",
+      "architectureType": "Single-thread non-blocking event-driven loop",
+      "testingStrategy": "Virtual network namespaces (`ip netns`) and synthetic Scapy packet injection"
+    }
+  },
+  {
+    "slug": "micro-kv",
+    "name": "MicroKV",
+    "tagline": "Persistent In-Memory Key-Value Store with Write-Ahead Logging",
+    "description": "An embeddable, asynchronous key-value storage engine engineered in Python. Combines memory-mapped storage indexing with an append-only write-ahead log (WAL) for durability, atomic crash recovery, and efficient read snapshots.",
+    "category": "Backend",
+    "technologies": ["Python", "AsyncIO", "WAL", "Memory Mapping", "Storage Internals"],
+    "github": "https://github.com/coopeace",
+    "featured": true,
+    "missionNumber": "MSN-02",
+    "architectureHighlights": [
+      "Append-only write-ahead log with CRC32 checksum verification for tamper and torn-write detection.",
+      "In-memory hash index with segment-based compaction and periodic background snapshots.",
+      "Asynchronous client/server protocol over TCP with custom binary framing and serialization.",
+      "Supports atomic multi-key batch transactions with isolation guarantees."
+    ],
+    "keyChallenges": [
+      "Deterministic crash recovery log replay when recovering from mid-write process crashes.",
+      "Zero-downtime log compaction without locking write availability."
+    ],
+    "specs": {
+      "runtime": "Python AsyncIO / POSIX",
+      "protocolOrFormat": "Custom binary framing (magic byte, len, opcode, payload, CRC32)",
+      "architectureType": "Log-Structured WAL + Memory Index",
+      "testingStrategy": "Automated fault injection scripts killing process during random write intervals"
+    }
+  },
+  {
+    "slug": "sys-stat-daemon",
+    "name": "SysStat Daemon",
+    "tagline": "Low-Overhead Linux Systems Telemetry Collector",
+    "description": "A lightweight systems telemetry daemon that extracts real-time CPU scheduling metrics, memory slab allocation, disk I/O pressure, and context switch telemetry directly from Linux `/proc` and `/sys` virtual filesystems.",
+    "category": "Systems",
+    "technologies": ["Linux", "Python", "procfs", "Syscalls", "Performance Monitoring"],
+    "github": "https://github.com/coopeace",
+    "featured": true,
+    "missionNumber": "MSN-03",
+    "architectureHighlights": [
+      "High-efficiency `/proc/stat`, `/proc/meminfo`, and `/proc/diskstats` polling using reusable file descriptors.",
+      "Zero-allocation streaming parser minimizing Python garbage collection pauses.",
+      "Calculates microsecond CPU core utilization deltas, interrupt frequencies, and page cache pressure.",
+      "Exports compact JSON and Prometheus-compatible scrape endpoints."
+    ],
+    "keyChallenges": [
+      "Minimizing daemon CPU overhead to less than 0.5% during 100ms sampling intervals.",
+      "Parsing dynamic Linux kernel procfs differences across kernel generations."
+    ],
+    "specs": {
+      "runtime": "Linux Kernel 5.4+ / Python 3.10+",
+      "protocolOrFormat": "Prometheus Text Metrics & JSON HTTP API",
+      "architectureType": "Telemetry Daemon / Polling Engine",
+      "testingStrategy": "Stress-ng synthetic kernel load generation during telemetry runs"
+    }
+  },
+  {
+    "slug": "algo-forge",
+    "name": "AlgoForge",
+    "tagline": "Algorithms & Systems Data Structures Workbench",
+    "description": "A comprehensive laboratory and benchmark harness for fundamental computer science algorithms and data structures implemented from scratch. Features trie structures, disjoint-set unions, B-Trees, graph traversals, and algorithmic problem solutions.",
+    "category": "Tools",
+    "technologies": ["Python", "Algorithms", "Data Structures", "Benchmarking", "Pytest"],
+    "github": "https://github.com/coopeace",
+    "featured": false,
+    "missionNumber": "MSN-04",
+    "architectureHighlights": [
+      "Handcrafted implementations of Min-Heaps, Red-Black Trees, Graph shortest paths (Dijkstra/A*), and String matching (KMP, Rabin-Karp).",
+      "Automated asymptotic complexity verification suite comparing execution curves against theoretical Big-O.",
+      "Comprehensive test suites with randomized property-based test inputs."
+    ],
+    "keyChallenges": [
+      "Rigorous edge-case validation for self-balancing tree rotations and cycle detection in cyclic graphs."
+    ],
+    "specs": {
+      "runtime": "Python 3.11+",
+      "protocolOrFormat": "Standard Algorithms Suite",
+      "architectureType": "Library & Benchmark Harness",
+      "testingStrategy": "Property-based tests with Hypothesis and Pytest"
+    }
+  }
+]

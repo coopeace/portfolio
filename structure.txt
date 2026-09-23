@@ -1,0 +1,44 @@
+.
+├── content
+│   └── blog
+├── public
+│   └── images
+│       ├── blog
+│       ├── profile
+│       ├── projects
+│       └── space
+├── scripts
+└── src
+    ├── app
+    │   ├── about
+    │   ├── api
+    │   │   ├── contact
+    │   │   └── studio
+    │   │       ├── auth
+    │   │       ├── blog
+    │   │       ├── project
+    │   │       ├── telemetry
+    │   │       ├── timeline
+    │   │       └── upload
+    │   ├── blog
+    │   │   └── [slug]
+    │   ├── contact
+    │   ├── projects
+    │   │   └── [slug]
+    │   ├── studio
+    │   └── telemetry
+    ├── components
+    │   ├── about
+    │   ├── achievements
+    │   ├── art
+    │   ├── blog
+    │   ├── contact
+    │   ├── hero
+    │   ├── navigation
+    │   ├── projects
+    │   ├── providers
+    │   ├── space
+    │   ├── studio
+    │   └── ui
+    └── data
+

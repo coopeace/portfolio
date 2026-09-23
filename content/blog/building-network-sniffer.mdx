@@ -1,0 +1,157 @@
+---
+title: "Building a Raw Socket Network Packet Analyzer in Python"
+description: "Dissecting Ethernet frames, IPv4 packets, and TCP segments at the binary level using Linux AF_PACKET raw sockets and Python's struct module."
+date: "2026-09-10"
+category: "Networking"
+tags:
+  - Networking
+  - Python
+  - Linux
+  - Sockets
+  - TCP/IP
+readTime: "8 min read"
+featured: false
+---
+
+# Building a Raw Socket Network Packet Analyzer in Python
+
+High-level networking libraries abstract away packet headers, handshakes, and transport frames. However, to truly understand computer networking, there is no substitute for capturing raw binary frames as they exit the network interface card.
+
+In this article, we explore how to construct a lightweight, zero-dependency network packet analyzer in Python utilizing Linux **`AF_PACKET` raw sockets**.
+
+---
+
+## 1. Raw Sockets on Linux: `AF_PACKET`
+
+In standard socket programming, we typically open an `AF_INET` socket:
+
+```python
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+```
+
+With `AF_INET`, the Linux kernel handles layer 2 (Ethernet) and layer 3 (IP) framing automatically. 
+
+To capture layer 2 frames before the kernel processes them, we open an `AF_PACKET` socket:
+
+```python
+import socket
+
+# ETH_P_ALL = 0x0003 (in network byte order: htons(0x0003))
+raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
+```
+
+> **Note**: Opening raw sockets on Linux requires administrative privileges (`root`) or the `CAP_NET_RAW` capability.
+
+---
+
+## 2. Unpacking the Ethernet II Header
+
+Every frame received on an Ethernet interface begins with a 14-byte Ethernet II header:
+- Destination MAC Address (6 bytes)
+- Source MAC Address (6 bytes)
+- EtherType (2 bytes)
+
+We use Python's built-in `struct` module with big-endian format `! 6s 6s H`:
+
+```python
+import struct
+
+def parse_ethernet_frame(data: bytes):
+    dest_mac, src_mac, eth_proto = struct.unpack('! 6s 6s H', data[:14])
+    
+    formatted_dest = ':'.join(f'{b:02x}' for b in dest_mac)
+    formatted_src = ':'.join(f'{b:02x}' for b in src_mac)
+    
+    # Payload is everything after the first 14 bytes
+    return formatted_dest, formatted_src, socket.htons(eth_proto), data[14:]
+```
+
+If the EtherType is `0x0800` (`2048` decimal), the payload is an **IPv4 packet**.
+
+---
+
+## 3. Dissecting the IPv4 Header
+
+An IPv4 header is at least 20 bytes long. Key fields include:
+- Version & Internet Header Length (IHL) (1 byte)
+- Type of Service (1 byte)
+- Total Length (2 bytes)
+- Identification (2 bytes)
+- Flags & Fragment Offset (2 bytes)
+- Time to Live (TTL) (1 byte)
+- Protocol (1 byte: `6` for TCP, `17` for UDP, `1` for ICMP)
+- Header Checksum (2 bytes)
+- Source IP (4 bytes)
+- Destination IP (4 bytes)
+
+```python
+def parse_ipv4_packet(data: bytes):
+    version_header_len = data[0]
+    version = version_header_len >> 4
+    ihl = (version_header_len & 0xF) * 4  # Header length in bytes
+    
+    ttl, proto, src, target = struct.unpack('! 8x B B 2x 4s 4s', data[:20])
+    
+    src_ip = socket.inet_ntoa(src)
+    dest_ip = socket.inet_ntoa(target)
+    
+    # Payload follows after the dynamic IHL length
+    return version, ihl, ttl, proto, src_ip, dest_ip, data[ihl:]
+```
+
+---
+
+## 4. Dissecting the TCP Header
+
+If the IP protocol field is `6`, we unpack the 20-byte TCP header:
+
+```python
+def parse_tcp_segment(data: bytes):
+    src_port, dest_port, sequence, ack, offset_reserved_flags = struct.unpack('! H H L L H', data[:14])
+    
+    offset = (offset_reserved_flags >> 12) * 4
+    flags = offset_reserved_flags & 0x1FF
+    
+    flag_syn = (flags & 0x02) != 0
+    flag_ack = (flags & 0x10) != 0
+    flag_fin = (flags & 0x01) != 0
+    flag_rst = (flags & 0x04) != 0
+    
+    payload = data[offset:]
+    return src_port, dest_port, sequence, ack, flag_syn, flag_ack, flag_fin, flag_rst, payload
+```
+
+---
+
+## 5. Capturing Live Traffic
+
+Putting it all together into an event loop:
+
+```python
+def start_sniffer():
+    conn = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
+    print("[Sniffer Active] Listening for raw Ethernet frames...")
+
+    try:
+        while True:
+            raw_data, addr = conn.recvfrom(65535)
+            dest_mac, src_mac, eth_proto, payload = parse_ethernet_frame(raw_data)
+            
+            # 0x0800 indicates IPv4
+            if eth_proto == 0x0800:
+                ver, ihl, ttl, proto, src_ip, dest_ip, ip_payload = parse_ipv4_packet(payload)
+                
+                if proto == 6:  # TCP
+                    src_p, dst_p, seq, ack, syn, is_ack, fin, rst, tcp_data = parse_tcp_segment(ip_payload)
+                    print(f"[TCP] {src_ip}:{src_p} -> {dest_ip}:{dst_p} | SYN={syn} ACK={is_ack} FIN={fin} ({len(tcp_data)} bytes)")
+    except KeyboardInterrupt:
+        print("\n[Sniffer Stopped] Interface released.")
+        conn.close()
+```
+
+---
+
+## 6. Engineering Takeaway
+
+Building tools like this removes the fog from networking. Sockets, frames, and packets cease to be abstract concepts; they become tangible byte arrays that can be inspected, analyzed, and controlled.

@@ -1,0 +1,150 @@
+{
+  "orbitalLogMilestones": [
+    {
+      "id": "higher-secondary",
+      "period": "2023",
+      "stageBadge": "ACADEMIC FOUNDATION",
+      "title": "Higher Secondary",
+      "description": "Completed 12th grade with a Science & Mathematics background, building the analytical and mathematical foundation that led me toward computer applications and software development."
+    },
+    {
+      "id": "bca-begins",
+      "period": "2024",
+      "stageBadge": "MAJOR MILESTONE",
+      "isMajorMilestone": true,
+      "title": "BCA Begins",
+      "description": "Joined Michael Madhusudan Memorial College, affiliated with Kazi Nazrul University, beginning my formal education in computer applications."
+    },
+    {
+      "id": "year-01",
+      "period": "Year 01",
+      "stageBadge": "CORE CURRICULUM",
+      "title": "Programming Foundations",
+      "description": "My first year introduced me to the fundamentals of programming, algorithms, and the web.",
+      "courses": [
+        {
+          "name": "Introduction to Programming using C",
+          "grade": "A+",
+          "note": "Procedural foundations & memory concepts"
+        },
+        {
+          "name": "Office Automation Software Lab",
+          "grade": "A+"
+        }
+      ]
+    },
+    {
+      "id": "year-02",
+      "period": "Year 02",
+      "stageBadge": "CORE CURRICULUM",
+      "title": "Data & Web Foundations",
+      "description": "Expanded my understanding of algorithms, data structures, and web development.",
+      "courses": [
+        {
+          "name": "Data Structures and Algorithms",
+          "grade": "A",
+          "note": "Algorithmic thinking & complexity analysis"
+        },
+        {
+          "name": "Web Designing with HTML, CSS",
+          "grade": "O",
+          "note": "Web presentation & layout architecture"
+        }
+      ]
+    },
+    {
+      "id": "year-03",
+      "period": "Year 03",
+      "stageBadge": "DEEPER SYSTEMS",
+      "title": "Deeper Computer Science",
+      "description": "Explored object-oriented programming and the underlying organization of computer systems.",
+      "courses": [
+        {
+          "name": "Object-Oriented Programming with C++",
+          "grade": "A+",
+          "note": "OOP paradigms progression (academic study)",
+          "isSecondary": true
+        },
+        {
+          "name": "Digital Logic and Computer Organization",
+          "grade": "A",
+          "note": "Computer architecture, logic gates & memory hierarchy"
+        }
+      ]
+    },
+    {
+      "id": "recent-independent",
+      "period": "Recent",
+      "stageBadge": "ACTIVE TRAJECTORY",
+      "isCurrent": true,
+      "title": "Independent Learning",
+      "description": "Moved beyond coursework through self-directed learning, with a current focus on Python, FastAPI, backend development, APIs, and building practical software projects.",
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "Backend Architecture",
+        "REST APIs",
+        "Linux Systems"
+      ]
+    }
+  ],
+  "dsaJourneyMilestones": [
+    {
+      "id": "dsa-foundations",
+      "step": "01",
+      "badge": "FOUNDATIONS",
+      "title": "Big-O Complexity & Computational Thinking",
+      "description": "Studied theoretical and practical complexity analysis — understanding how execution time scales (O(1) constant to O(n²) quadratic) and evaluating auxiliary space tradeoffs in Python.",
+      "status": "Completed",
+      "complexity": "O(1) to O(n) analysis",
+      "topics": [
+        "Time Complexity",
+        "Space Complexity",
+        "Python Memory"
+      ]
+    },
+    {
+      "id": "arrays-hashing",
+      "step": "02",
+      "badge": "CORE STRUCTURES",
+      "title": "Arrays & Hash Table Mechanics",
+      "description": "Explored contiguous memory indexing, direct array lookups, and how hash tables provide near-instant average O(1) key lookups using hashing functions.",
+      "status": "Completed",
+      "complexity": "O(1) average lookup",
+      "topics": [
+        "Array Indexing",
+        "Hash Maps",
+        "Key-Value Lookups"
+      ]
+    },
+    {
+      "id": "two-sum-milestone",
+      "step": "03",
+      "badge": "MILESTONE ACHIEVED",
+      "title": "Two Sum — The Canonical Problem (LeetCode #1)",
+      "description": "Analyzed the initial O(n²) nested loop brute-force, then engineered the optimal O(n) single-pass solution by storing previous values in a hash map and querying complement = target - num.",
+      "status": "Current Milestone",
+      "complexity": "O(n) Time · O(n) Space",
+      "codeHighlight": "complement = target - num",
+      "topics": [
+        "LeetCode #1",
+        "Single-Pass Hash Map",
+        "Complement Search"
+      ]
+    },
+    {
+      "id": "two-pointers-next",
+      "step": "04",
+      "badge": "NEXT HORIZON",
+      "title": "Two Pointers & Sliding Window Patterns",
+      "description": "Active horizon: advancing into two-pointer techniques on sorted sequences (Two Sum II, palindrome checks) and contiguous sliding window subarray boundaries.",
+      "status": "Next Target",
+      "complexity": "Targeting O(n) linear scans",
+      "topics": [
+        "Two Pointers",
+        "Sorted Arrays",
+        "Sliding Window"
+      ]
+    }
+  ]
+}

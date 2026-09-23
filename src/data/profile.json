@@ -1,0 +1,56 @@
+{
+  "name": "Shishir Dev",
+  "callsign": "SD-01",
+  "role": "Backend & Systems Developer",
+  "title": "Building Resilient Systems & Exploring Computational Limits",
+  "location": "Durgapur, West Bengal, India",
+  "coordinates": "23.5204° N, 87.3119° E",
+  "status": "MISSION ACTIVE // SYSTEMS NOMINAL",
+  "shortBio": "BCA student at Michael Madhusudan Memorial College (affiliated with Kazi Nazrul University) and self-directed developer exploring backend architectures, Linux internals, network stacks, and command-line tools.",
+  "bio": "My engineering journey is built around self-directed, first-principles learning. As a BCA student at Michael Madhusudan Memorial College, affiliated with Kazi Nazrul University, I use my academic foundation as a starting point while exploring beyond the curriculum through independent projects, experimentation, and deeper technical study.\n\nI am particularly interested in understanding what happens beneath the abstractions we use every day — how processes interact with an operating system, how memory is managed, how applications communicate through network stacks, and how software behaves when it meets the underlying system. I also enjoy exploring Linux as a platform for understanding and experimenting with these concepts.\n\nMy work primarily revolves around Python, backend development, command-line tools, and problem solving. I enjoy turning ideas into practical software while gradually working my way down the stack to understand the systems that make it possible. My college studies provide the theoretical foundation, while personal projects and experimentation give me the freedom to explore those concepts beyond the classroom.\n\nI think of this progression through the metaphor of space exploration: starting with what is known, venturing into unfamiliar territory, understanding the environment, and building reliable tools to go further. Every project is another mission — an opportunity to learn, experiment, and map a little more of the technical landscape.",
+  "focusAreas": [
+    "Python",
+    "Backend Development",
+    "Command-Line Tools",
+    "Linux Internals",
+    "Computer Networking",
+    "Systems Programming",
+    "Data Structures & Algorithms",
+    "Problem Solving"
+  ],
+  "philosophies": [
+    {
+      "title": "First-Principles Comprehension",
+      "description": "Understand the underlying protocols, syscalls, and memory layouts rather than relying purely on high-level abstractions.",
+      "icon": "Terminal"
+    },
+    {
+      "title": "Systems Over Magic",
+      "description": "Architecture should be predictable, observable, and modular. Code is written once but read, debugged, and maintained many times.",
+      "icon": "Cpu"
+    },
+    {
+      "title": "Networked Thinking",
+      "description": "Every distributed system is governed by latency, packet loss, and connection states. Designing with network realities yields resilient software.",
+      "icon": "Network"
+    },
+    {
+      "title": "Truthful Craftsmanship",
+      "description": "Never simulate competence with fabricated metrics. Real engineering is built on honest milestones, rigorous benchmarks, and continuous exploration.",
+      "icon": "Layers"
+    }
+  ],
+  "stats": [
+    { "label": "Systems Missions", "value": "4" },
+    { "label": "Primary Runtime", "value": "Python & Linux" },
+    { "label": "Foundational DSA", "value": "LeetCode / NeetCode" },
+    { "label": "Telemetry Integrity", "value": "100% Truthful" }
+  ],
+  "education": {
+    "degree": "Bachelor of Computer Applications (BCA)",
+    "institution": "Michael Madhusudan Memorial College",
+    "university": "Kazi Nazrul University",
+    "location": "Durgapur, West Bengal, India"
+  },
+  "avatarPlaceholder": "/images/profile/placeholder.svg"
+}

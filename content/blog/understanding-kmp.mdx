@@ -1,0 +1,136 @@
+---
+title: "Understanding the Knuth-Morris-Pratt (KMP) Algorithm"
+description: "A first-principles deep dive into linear-time pattern matching, computing the Longest Proper Prefix which is also Suffix (LPS) table, and avoiding redundant backtracking."
+date: "2026-09-17"
+category: "Algorithms"
+tags:
+  - Python
+  - Algorithms
+  - Strings
+  - DSA
+readTime: "7 min read"
+featured: true
+---
+
+# Understanding the Knuth-Morris-Pratt (KMP) Algorithm
+
+String matching is a foundational computational challenge. Given a text string $T$ of length $N$ and a pattern $P$ of length $M$, the naive approach checks every possible alignment, leading to an worst-case time complexity of $O(N \times M)$.
+
+The **Knuth-Morris-Pratt (KMP)** algorithm eliminates redundant character comparisons by precomputing the internal self-similarity of the pattern into a table—frequently referred to as the **$\pi$ table** or **LPS (Longest Proper Prefix which is also Suffix)** array. This reduces the search complexity to an optimal $O(N + M)$.
+
+---
+
+## 1. The Core Insight: Reusing Past Comparisons
+
+In naive string matching, when a character mismatch occurs after matching several characters, the text pointer $i$ is reset back to $i - j + 1$, and the pattern pointer $j$ is reset to $0$.
+
+KMP observes that **we already know what characters exist in the text up to the mismatch point**, because they matched the pattern! If the pattern has a prefix that matches a suffix of the matched portion, we can shift the pattern forward so that the prefix aligns with that suffix without rewinding the text pointer.
+
+---
+
+## 2. Computing the LPS Array
+
+The LPS array stores the length of the longest proper prefix of the substring $P[0 \dots i]$ that is also a suffix of $P[0 \dots i]$.
+
+A "proper prefix" is a prefix that is not equal to the whole string itself.
+
+### Python Implementation of LPS Precomputation:
+
+```python
+def compute_lps(pattern: str) -> list[int]:
+    """
+    Computes the Longest Proper Prefix which is also Suffix (LPS) array.
+    Time Complexity: O(M)
+    Space Complexity: O(M)
+    """
+    m = len(pattern)
+    lps = [0] * m
+    length = 0  # Length of the previous longest prefix suffix
+    i = 1
+
+    while i < m:
+        if pattern[i] == pattern[length]:
+            length += 1
+            lps[i] = length
+            i += 1
+        else:
+            if length != 0:
+                # Fall back to previous longest prefix suffix
+                length = lps[length - 1]
+            else:
+                lps[i] = 0
+                i += 1
+
+    return lps
+```
+
+### Trace Example: `ABABCABAB`
+
+Let us trace `ABABCABAB`:
+
+| Index | Character | LPS Value | Explanation |
+|---|---|---|---|
+| 0 | A | 0 | No proper prefix |
+| 1 | B | 0 | No common prefix/suffix |
+| 2 | A | 1 | "A" is prefix and suffix |
+| 3 | B | 2 | "AB" is prefix and suffix |
+| 4 | C | 0 | "C" breaks the pattern |
+| 5 | A | 1 | "A" matches $P[0]$ |
+| 6 | B | 2 | "AB" matches $P[0..1]$ |
+| 7 | A | 3 | "ABA" matches $P[0..2]$ |
+| 8 | B | 4 | "ABAB" matches $P[0..3]$ |
+
+---
+
+## 3. The Search Algorithm
+
+With the LPS table ready, searching through text requires a single linear pass without ever decrementing the text index $i$:
+
+```python
+def kmp_search(text: str, pattern: str) -> list[int]:
+    """
+    Finds all occurrences of pattern in text using KMP.
+    Returns list of starting indices.
+    """
+    if not pattern:
+        return []
+
+    n, m = len(text), len(pattern)
+    lps = compute_lps(pattern)
+    matches = []
+
+    i = 0  # Index for text
+    j = 0  # Index for pattern
+
+    while i < n:
+        if pattern[j] == text[i]:
+            i += 1
+            j += 1
+
+        if j == m:
+            matches.append(i - j)
+            j = lps[j - 1]
+        elif i < n and pattern[j] != text[i]:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
+
+    return matches
+```
+
+---
+
+## 4. Complexity Analysis
+
+- **Preprocessing Time**: $O(M)$ where $M$ is the length of the pattern.
+- **Matching Time**: $O(N)$ where $N$ is the length of the text.
+- **Total Time**: $O(N + M)$ guaranteed, even in adversarial worst-case inputs (e.g., text `AAAAAAAAB` against pattern `AAAB`).
+- **Auxiliary Space**: $O(M)$ to store the LPS array.
+
+---
+
+## 5. Key Takeaways for Systems Engineers
+
+1. **State Machine Analogy**: The LPS array effectively constructs the failure transitions of a Deterministic Finite Automaton (DFA).
+2. **Buffer Efficiency**: Because the text pointer $i$ never retreats, KMP can process streaming inputs directly from network sockets or disk file descriptors without requiring random seek capability.
