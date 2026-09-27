@@ -1,26 +1,29 @@
 ---
-name: "Shishir Dev"
-callsign: "SD-01"
-role: "Backend & Systems Developer"
-title: "Building Resilient Systems & Exploring Computational Limits"
-location: "Durgapur, West Bengal, India"
-status: "MISSION ACTIVE // SYSTEMS NOMINAL"
-shortBio: "BCA student at Michael Madhusudan Memorial College (affiliated with Kazi Nazrul University) and self-directed developer exploring backend architectures, Linux internals, network stacks, and command-line tools."
+name: Shishir Dev
+callsign: SD-01
+role: Backend & Systems Developer
+title: Building Resilient Systems & Exploring Computational Limits
+location: 'Durgapur, West Bengal, India'
+status: MISSION ACTIVE // SYSTEMS NOMINAL
+shortBio: >-
+  BCA student at Michael Madhusudan Memorial College (affiliated with Kazi
+  Nazrul University) and self-directed developer exploring backend
+  architectures, Linux internals, network stacks, and command-line tools.
 focusAreas:
-  - "Python"
-  - "Backend Development"
-  - "Command-Line Tools"
-  - "Linux Internals"
-  - "Computer Networking"
-  - "Systems Programming"
-  - "Data Structures & Algorithms"
-  - "Problem Solving"
+  - Python
+  - Backend Development
+  - Command-Line Tools
+  - Linux Internals
+  - Computer Networking
+  - Systems Programming
+  - Data Structures & Algorithms
+  - Problem Solving
 education:
-  degree: "Bachelor of Computer Applications (BCA)"
-  institution: "Michael Madhusudan Memorial College"
-  university: "Kazi Nazrul University"
-  location: "Durgapur, West Bengal, India"
-avatarPlaceholder: "/images/profile/placeholder.svg"
+  degree: Bachelor of Computer Applications (BCA)
+  institution: Michael Madhusudan Memorial College
+  university: Kazi Nazrul University
+  location: 'Durgapur, West Bengal, India'
+avatarPlaceholder: /images/profile/placeholder.svg
 ---
 
 My engineering journey is built around self-directed, first-principles learning. As a BCA student at Michael Madhusudan Memorial College, affiliated with Kazi Nazrul University, I use my academic foundation as a starting point while exploring beyond the curriculum through independent projects, experimentation, and deeper technical study.
