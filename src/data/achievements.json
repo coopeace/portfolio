@@ -5,7 +5,7 @@
     "solved": 0,
     "total": 0,
     "url": "https://leetcode.com/",
-    "lastUpdated": "2026-09-18",
+    "lastUpdated": "2026-09-27",
     "description": "Algorithmic problem solving across arrays, strings, dynamic programming, and graph algorithms. Baseline metrics tracked honestly without simulated numbers.",
     "status": "Active Exploration",
     "category": "DSA & Problem Solving"
@@ -13,11 +13,11 @@
   {
     "platform": "NeetCode",
     "label": "NeetCode Core Roadmap",
-    "solved": 0,
+    "solved": 3,
     "total": 150,
-    "progress": 0,
-    "url": "https://neetcode.io/",
-    "lastUpdated": "2026-09-18",
+    "progress": 2,
+    "url": "https://neetcode.io/user/DynamicNimbus361",
+    "lastUpdated": "2026-09-27",
     "description": "Structured roadmap through core algorithmic patterns: Two Pointers, Sliding Window, Trees, Backtracking, and Heaps.",
     "status": "Curated Progression",
     "category": "DSA & Problem Solving"
@@ -26,8 +26,8 @@
     "platform": "HackerRank",
     "label": "HackerRank Problem Solving",
     "badges": 0,
-    "url": "https://www.hackerrank.com/",
-    "lastUpdated": "2026-09-18",
+    "url": "https://www.hackerrank.com/profile/shishirdev5263",
+    "lastUpdated": "2026-09-27",
     "description": "Foundational coding challenges covering Python data structures, standard algorithms, and functional syntax proficiency.",
     "status": "Fundamental Challenges",
     "category": "DSA & Problem Solving"
