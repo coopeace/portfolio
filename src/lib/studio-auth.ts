@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import crypto from "crypto";
 
 const COOKIE_NAME = "studio_session";
-const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days in seconds
 
 /**
  * Returns whether password protection is configured in environment variables.
@@ -75,6 +74,7 @@ export async function isAuthenticatedStudioRequest(request?: Request): Promise<b
 
 /**
  * Generates cookie parameters for a verified session.
+ * Omitting maxAge makes this a session-only cookie that is discarded when the browser session closes.
  */
 export function getStudioSessionCookie() {
   return {
@@ -83,7 +83,6 @@ export function getStudioSessionCookie() {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax" as const,
-    maxAge: SESSION_MAX_AGE,
     path: "/",
   };
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { revalidatePath } from "next/cache";
 import { isAuthenticatedStudioRequest } from "@/lib/studio-auth";
+import { persistStudioFile } from "@/lib/studio-persistence";
 
 export async function POST(request: Request) {
   const isAuth = await isAuthenticatedStudioRequest(request);
@@ -59,17 +59,41 @@ featured: ${Boolean(featured)}
 ${content.trim()}
 `;
 
-    const blogDir = path.join(process.cwd(), "content", "blog");
-    if (!fs.existsSync(blogDir)) {
-      fs.mkdirSync(blogDir, { recursive: true });
+    const relativePath = `content/blog/${cleanSlug}.mdx`;
+    const persistResult = await persistStudioFile(
+      relativePath,
+      mdxContent,
+      `feat(blog): publish article '${title}' (${cleanSlug})`
+    );
+
+    if (!persistResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: persistResult.message,
+          needsTokenSetup: persistResult.needsTokenSetup,
+          error: persistResult.error,
+        },
+        { status: persistResult.needsTokenSetup ? 400 : 500 }
+      );
     }
 
-    const filePath = path.join(blogDir, `${cleanSlug}.mdx`);
-    fs.writeFileSync(filePath, mdxContent, "utf8");
+    try {
+      revalidatePath("/blog");
+      revalidatePath(`/blog/${cleanSlug}`);
+      revalidatePath("/");
+    } catch {
+      // Revalidation is non-blocking
+    }
 
     return NextResponse.json({
       success: true,
-      message: `Article '${title}' published successfully!`,
+      mode: persistResult.mode,
+      commitUrl: persistResult.commitUrl,
+      message:
+        persistResult.mode === "github"
+          ? `Article '${title}' committed to GitHub repository! Vercel is deploying the updates.`
+          : `Article '${title}' published successfully!`,
       slug: cleanSlug,
       url: `/blog/${cleanSlug}`,
     });

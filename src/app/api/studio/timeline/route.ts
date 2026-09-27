@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import fs from "fs";
 import path from "path";
 import { isAuthenticatedStudioRequest } from "@/lib/studio-auth";
+import { persistStudioFile } from "@/lib/studio-persistence";
 
 export async function GET() {
   try {
@@ -52,27 +54,45 @@ export async function POST(request: Request) {
       );
     }
 
-    const timelineFilePath = path.join(
-      process.cwd(),
-      "src",
-      "data",
-      "timeline.json"
-    );
-
     const payload = {
       orbitalLogMilestones,
       dsaJourneyMilestones,
     };
 
-    fs.writeFileSync(
-      timelineFilePath,
-      JSON.stringify(payload, null, 2),
-      "utf8"
+    const persistResult = await persistStudioFile(
+      "src/data/timeline.json",
+      JSON.stringify(payload, null, 2) + "\n",
+      "chore(studio): update orbital log & dsa progression milestones"
     );
+
+    if (!persistResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: persistResult.message,
+          needsTokenSetup: persistResult.needsTokenSetup,
+          error: persistResult.error,
+        },
+        { status: persistResult.needsTokenSetup ? 400 : 500 }
+      );
+    }
+
+    try {
+      revalidatePath("/about");
+      revalidatePath("/telemetry");
+      revalidatePath("/");
+    } catch {
+      // Revalidation is non-blocking
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Orbital log and DSA milestones synchronized to timeline.json successfully!",
+      mode: persistResult.mode,
+      commitUrl: persistResult.commitUrl,
+      message:
+        persistResult.mode === "github"
+          ? "Orbital log and DSA milestones committed to GitHub! Vercel is deploying updates."
+          : "Orbital log and DSA milestones synchronized to timeline.json successfully!",
     });
   } catch (err: unknown) {
     const errorMessage =

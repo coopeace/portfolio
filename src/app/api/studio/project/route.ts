@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import fs from "fs";
 import path from "path";
 import { isAuthenticatedStudioRequest } from "@/lib/studio-auth";
+import { persistStudioFile } from "@/lib/studio-persistence";
+import { projects as defaultProjects } from "@/data/projects";
 
 export async function POST(request: Request) {
   const isAuth = await isAuthenticatedStudioRequest(request);
@@ -29,9 +32,13 @@ export async function POST(request: Request) {
       .replace(/-+/g, "-");
 
     const projectsFilePath = path.join(process.cwd(), "src", "data", "projects.json");
-    let currentProjects = [];
+    let currentProjects = [...defaultProjects];
     if (fs.existsSync(projectsFilePath)) {
-      currentProjects = JSON.parse(fs.readFileSync(projectsFilePath, "utf8"));
+      try {
+        currentProjects = JSON.parse(fs.readFileSync(projectsFilePath, "utf8"));
+      } catch {
+        // Fall back to defaultProjects if read/parse fails
+      }
     }
 
     // Determine next mission number
@@ -85,15 +92,40 @@ export async function POST(request: Request) {
       currentProjects.unshift(newProject);
     }
 
-    fs.writeFileSync(
-      projectsFilePath,
-      JSON.stringify(currentProjects, null, 2),
-      "utf8"
+    const persistResult = await persistStudioFile(
+      "src/data/projects.json",
+      JSON.stringify(currentProjects, null, 2) + "\n",
+      `feat(studio): add/update project '${name}' (${cleanSlug})`
     );
+
+    if (!persistResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: persistResult.message,
+          needsTokenSetup: persistResult.needsTokenSetup,
+          error: persistResult.error,
+        },
+        { status: persistResult.needsTokenSetup ? 400 : 500 }
+      );
+    }
+
+    try {
+      revalidatePath("/projects");
+      revalidatePath(`/projects/${cleanSlug}`);
+      revalidatePath("/");
+    } catch {
+      // Revalidation is non-blocking
+    }
 
     return NextResponse.json({
       success: true,
-      message: `Project '${name}' saved successfully to missions database!`,
+      mode: persistResult.mode,
+      commitUrl: persistResult.commitUrl,
+      message:
+        persistResult.mode === "github"
+          ? `Project '${name}' committed to GitHub repository! Vercel is deploying the updates.`
+          : `Project '${name}' saved successfully to missions database!`,
       slug: cleanSlug,
       url: `/projects/${cleanSlug}`,
     });

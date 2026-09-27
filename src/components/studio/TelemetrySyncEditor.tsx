@@ -12,6 +12,9 @@ import {
   Save,
   RotateCcw,
   Sparkles,
+  Download,
+  Copy,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AchievementCard } from "@/components/achievements/AchievementCard";
@@ -26,6 +29,8 @@ export function TelemetrySyncEditor() {
   const [feedback, setFeedback] = React.useState<{
     type: "success" | "error";
     message: string;
+    commitUrl?: string;
+    needsTokenSetup?: boolean;
   } | null>(null);
 
   // Fetch current live telemetry from disk
@@ -109,12 +114,15 @@ export function TelemetrySyncEditor() {
         setFeedback({
           type: "success",
           message:
+            data.message ||
             "Telemetry synchronized successfully! All public dashboards updated.",
+          commitUrl: data.commitUrl,
         });
       } else {
         setFeedback({
           type: "error",
-          message: data.message || "Failed to commit telemetry to disk.",
+          message: data.message || "Failed to commit telemetry.",
+          needsTokenSetup: data.needsTokenSetup,
         });
       }
     } catch {
@@ -125,6 +133,26 @@ export function TelemetrySyncEditor() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const [hasCopied, setHasCopied] = React.useState(false);
+
+  const handleCopyJson = () => {
+    navigator.clipboard.writeText(JSON.stringify(achievements, null, 2));
+    setHasCopied(true);
+    setTimeout(() => setHasCopied(false), 2000);
+  };
+
+  const handleDownloadJson = () => {
+    const blob = new Blob([JSON.stringify(achievements, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "achievements.json";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   if (isLoading) {
@@ -188,19 +216,58 @@ export function TelemetrySyncEditor() {
       {feedback && (
         <div
           role="status"
-          className={`p-4 rounded-lg font-mono text-xs flex flex-wrap items-center justify-between gap-2 border ${
+          className={`p-4 rounded-lg font-mono text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 border ${
             feedback.type === "success"
               ? "bg-emerald-950/40 border-emerald-500/50 text-emerald-400"
               : "bg-red-950/40 border-red-500/50 text-red-400"
           }`}
         >
-          <div className="flex items-center space-x-2">
+          <div className="flex items-start sm:items-center space-x-2">
             {feedback.type === "success" ? (
-              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5 sm:mt-0" />
             ) : (
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 sm:mt-0" />
             )}
-            <span>{feedback.message}</span>
+            <span className="leading-relaxed">{feedback.message}</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 pl-6 sm:pl-0 flex-shrink-0">
+            {feedback.commitUrl && (
+              <a
+                href={feedback.commitUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-accent/20 border border-accent/40 text-accent font-semibold hover:bg-accent/30 transition-colors"
+              >
+                <span>View GitHub Commit</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+
+            {feedback.needsTokenSetup && (
+              <>
+                <button
+                  type="button"
+                  onClick={handleDownloadJson}
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-surface border border-border text-foreground hover:bg-surface-elevated transition-colors"
+                >
+                  <Download className="w-3 h-3 text-accent" />
+                  <span>Download JSON</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyJson}
+                  className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-surface border border-border text-foreground hover:bg-surface-elevated transition-colors"
+                >
+                  {hasCopied ? (
+                    <Check className="w-3 h-3 text-success" />
+                  ) : (
+                    <Copy className="w-3 h-3 text-accent" />
+                  )}
+                  <span>{hasCopied ? "Copied!" : "Copy JSON"}</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -233,10 +300,10 @@ export function TelemetrySyncEditor() {
               <input
                 type="number"
                 min="0"
-                value={leetcode.solved ?? 0}
+                value={leetcode.solved === 0 ? 0 : (leetcode.solved ?? "")}
                 onChange={(e) =>
                   updateAchievement(leetcodeIdx, {
-                    solved: parseInt(e.target.value, 10) || 0,
+                    solved: e.target.value === "" ? 0 : Math.max(0, parseInt(e.target.value, 10) || 0),
                   })
                 }
                 className="w-full px-3.5 py-2 rounded-lg bg-surface-elevated border border-border font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
@@ -312,16 +379,14 @@ export function TelemetrySyncEditor() {
                 type="number"
                 min="0"
                 max="150"
-                value={neetcode.solved ?? 0}
-                onChange={(e) =>
+                value={neetcode.solved === 0 ? 0 : (neetcode.solved ?? "")}
+                onChange={(e) => {
+                  const val = e.target.value === "" ? 0 : Math.max(0, Math.min(150, parseInt(e.target.value, 10) || 0));
                   updateAchievement(neetcodeIdx, {
-                    solved: parseInt(e.target.value, 10) || 0,
-                    progress: Math.min(
-                      100,
-                      Math.round(((parseInt(e.target.value, 10) || 0) / 150) * 100)
-                    ),
-                  })
-                }
+                    solved: val,
+                    progress: Math.min(100, Math.round((val / 150) * 100)),
+                  });
+                }}
                 className="w-full px-3.5 py-2 rounded-lg bg-surface-elevated border border-border font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
               />
               {/* Live Progress Bar */}
@@ -401,10 +466,10 @@ export function TelemetrySyncEditor() {
               <input
                 type="number"
                 min="0"
-                value={hackerrank.badges ?? 0}
+                value={hackerrank.badges === 0 ? 0 : (hackerrank.badges ?? "")}
                 onChange={(e) =>
                   updateAchievement(hackerrankIdx, {
-                    badges: parseInt(e.target.value, 10) || 0,
+                    badges: e.target.value === "" ? 0 : Math.max(0, parseInt(e.target.value, 10) || 0),
                   })
                 }
                 className="w-full px-3.5 py-2 rounded-lg bg-surface-elevated border border-border font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent"

@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   LogOut,
   Compass,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -37,6 +38,7 @@ export default function StudioPage() {
     type: "success" | "error";
     message: string;
     url?: string;
+    commitUrl?: string;
   } | null>(null);
 
   // ----------------------------------------------------
@@ -225,6 +227,7 @@ export default function StudioPage() {
           type: "success",
           message: data.message,
           url: data.url,
+          commitUrl: data.commitUrl,
         });
         setBlogTitle("");
         setBlogSlug("");
@@ -313,6 +316,7 @@ export default function StudioPage() {
           type: "success",
           message: data.message,
           url: data.url,
+          commitUrl: data.commitUrl,
         });
         setProjName("");
         setProjSlug("");
@@ -540,15 +544,29 @@ export default function StudioPage() {
             <span>{feedback.message}</span>
           </div>
 
-          {feedback.url && (
-            <Link
-              href={feedback.url}
-              className="inline-flex items-center space-x-1 font-bold text-accent hover:underline flex-shrink-0"
-            >
-              <span>View Published Route</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            {feedback.commitUrl && (
+              <a
+                href={feedback.commitUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-1 font-bold text-accent hover:underline flex-shrink-0"
+              >
+                <span>View GitHub Commit</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+
+            {feedback.url && (
+              <Link
+                href={feedback.url}
+                className="inline-flex items-center space-x-1 font-bold text-accent hover:underline flex-shrink-0"
+              >
+                <span>View Published Route</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            )}
+          </div>
         </div>
       )}
 

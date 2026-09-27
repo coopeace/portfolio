@@ -44,6 +44,7 @@ export function TimelineEditor() {
   const [feedback, setFeedback] = React.useState<{
     type: "success" | "error";
     message: string;
+    commitUrl?: string;
   } | null>(null);
 
   // ----------------------------------------------------
@@ -319,12 +320,14 @@ export function TimelineEditor() {
         setFeedback({
           type: "success",
           message:
+            data.message ||
             "Timeline milestones synchronized successfully! All public views updated.",
+          commitUrl: data.commitUrl,
         });
       } else {
         setFeedback({
           type: "error",
-          message: data.message || "Failed to commit milestones to disk.",
+          message: data.message || "Failed to commit milestones.",
         });
       }
     } catch {
@@ -412,6 +415,17 @@ export function TimelineEditor() {
             <span>{feedback.message}</span>
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            {feedback.commitUrl && (
+              <a
+                href={feedback.commitUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground inline-flex items-center space-x-1 font-semibold text-accent"
+              >
+                <span>View GitHub Commit</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
             <Link
               href="/about"
               target="_blank"
