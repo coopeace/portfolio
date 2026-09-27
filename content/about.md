@@ -1,13 +1,13 @@
 ---
-title: "About Shishir Dev"
-callsign: "SD-01"
-role: "Backend & Systems Developer"
-status: "MISSION ACTIVE // SYSTEMS NOMINAL"
-location: "Durgapur, India"
-academicBase: "BCA · MMMC (KNU)"
-dossierStream: "Personnel Dossier // Flight Log SD-01"
-heading: "Engineering Journey"
-subtitle: "Systems & Backend Exploration"
+title: About Shishir Dev
+callsign: SD-01
+role: Backend & Systems Developer
+status: MISSION ACTIVE // SYSTEMS NOMINAL
+location: 'Durgapur, West Bengal, India'
+academicBase: BCA · MMMC (KNU)
+dossierStream: Personnel Dossier // Flight Log SD-01
+heading: Engineering Journey
+subtitle: Systems & Backend Exploration
 ---
 
 My engineering journey is built around self-directed, first-principles learning. As a BCA student at Michael Madhusudan Memorial College, affiliated with Kazi Nazrul University, I use my academic foundation as a starting point while exploring beyond the curriculum through independent projects, experimentation, and deeper technical study.
